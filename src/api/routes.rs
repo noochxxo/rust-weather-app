@@ -16,15 +16,15 @@ pub async fn weather() -> impl Responder {
 
     // TODO: Get geolocation using the location data passed along with the request
 
-    let (latitude, longitude, location, error) = geocode("Saskatoon", &|result| {
+    let (latitude, longitude, location) = geocode("&", &|result| {
         match result {
             Ok((latitude, longitude, location)) => {
                 
-                (latitude, longitude, location, "".to_owned())
+                (latitude, longitude, location)
             }
             Err(error) => {
                 println!("Error: {}", error);
-                return (0.0, 0.0, "".to_string(), error.to_owned())
+                return (0.0, 0.0, error.to_owned())
             }
         }
     }).await.unwrap();

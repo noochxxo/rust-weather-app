@@ -6,7 +6,7 @@ use std::env;
 
 // Is there a better way to get the location without using closures
 
-pub async fn geocode(address: &str, callback: &dyn Fn(Result<(f64, f64, String), &str>) -> (f64, f64, String, String)) -> Result<(f64, f64, String, String), String>  {
+pub async fn geocode(address: &str, callback: &dyn Fn(Result<(f64, f64, String), &str>) -> (f64, f64, String)) -> Result<(f64, f64, String), String>  {
   let map_api_key = env::var("MAP_API_KEY").expect("MAP_API_KEY must be set");
   let url = format!("https://api.mapbox.com/geocoding/v5/mapbox.places/{}.json?access_token={}&limit=1", address, map_api_key);
 
@@ -36,6 +36,6 @@ pub async fn geocode(address: &str, callback: &dyn Fn(Result<(f64, f64, String),
      location = feature["place_name"].as_str().unwrap().to_owned();
      callback(Ok((latitude, longitude, location.to_owned())));
   }
-  Ok((latitude, longitude, location, "".to_owned()))
+  Ok((latitude, longitude, location))
 
 }
