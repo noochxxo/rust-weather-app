@@ -20,7 +20,6 @@ pub async fn geocode(address: &str, callback: &dyn Fn(Result<(f64, f64, String),
    
 
   // TODO: refactor the following code
-  // TODO: program panics when no location is found
 
   let mut latitude: f64 = 0.0;
   let mut longitude: f64 = 0.0;
@@ -29,7 +28,7 @@ pub async fn geocode(address: &str, callback: &dyn Fn(Result<(f64, f64, String),
   if body["features"].is_null() {
     callback(Err("Unable to connect to location services!"));
   } else if body["features"].as_array().unwrap().is_empty() {
-    callback(Err("Unable to find location. Try another search."));
+    callback(Err("Unable to find location. Try another search. - mapbox"));
   } else {
      let feature = &body["features"][0];
      latitude = feature["center"][1].as_f64().unwrap();

@@ -15,9 +15,12 @@ use actix_web::{App,web, HttpServer};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // set api keys and environment variables
     let api_keys: API_Keys = set_env_keys();
-    let key: String = "MAP_API_KEY".to_string();
-    set_var(key, api_keys.location);
+    let map_key: String = "MAP_API_KEY".to_string();
+    let weather_key: String = "WEATHER_API_KEY".to_string();
+    set_var(map_key, api_keys.location);
+    set_var(weather_key, api_keys.weather);
 
     HttpServer::new(|| {
         App::new()

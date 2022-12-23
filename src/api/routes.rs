@@ -1,10 +1,9 @@
-
-use std::f64;
-
-use crate::utils::geocode::geocode;
+use crate::utils::{
+    geocode::geocode,
+    forecast::forecast,
+    };
 
 use actix_web::{get, HttpResponse, Responder};
-use serde_json::error;
 
 #[get("/")]
 pub async fn index() -> impl Responder {
@@ -30,9 +29,14 @@ pub async fn weather() -> impl Responder {
         }
     }).await.unwrap();
 
-
-    
     // TODO: Get weather data
+    forecast(latitude, longitude, &|result| {
+        match result {
+            Ok(forecast) => println!("Forecast: {}", forecast),
+            Err(error) => println!("Error: {}", error),
+        }
+    }).await;
+
     HttpResponse::Ok().body(format!("{} is colder than a witches tit.", location))
 }
 
