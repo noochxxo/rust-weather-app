@@ -14,30 +14,15 @@ pub async fn index() -> impl Responder {
 pub async fn weather() -> impl Responder {
     // TODO: Have location data passed along with the request
 
-    // TODO: Get geolocation using the location data passed along with the request
+    let location_data = geocode("Saskatoon").await.unwrap();
 
-    let (latitude, longitude, location) = geocode("&", &|result| {
-        match result {
-            Ok((latitude, longitude, location)) => {
-                
-                (latitude, longitude, location)
-            }
-            Err(error) => {
-                println!("Error: {}", error);
-                return (0.0, 0.0, error.to_owned())
-            }
-        }
-    }).await.unwrap();
+    let feature = &location_data["features"][0];
+    let latitude = feature["center"][1].as_f64().unwrap();
+    let longitude = feature["center"][0].as_f64().unwrap();
+    
+    let weather_data = forecast(latitude, longitude).await.unwrap();
 
-    // TODO: Get weather data
-    forecast(latitude, longitude, &|result| {
-        match result {
-            Ok(forecast) => println!("Forecast: {}", forecast),
-            Err(error) => println!("Error: {}", error),
-        }
-    }).await;
-
-    HttpResponse::Ok().body(format!("{} is colder than a witches tit.", location))
+    HttpResponse::Ok().body(format!("{:?}", weather_data))
 }
 
 pub async fn _404() -> impl Responder {
