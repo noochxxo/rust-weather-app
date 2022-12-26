@@ -1,14 +1,36 @@
+
+
 use crate::utils::{
     geocode::geocode,
     forecast::forecast,
     };
 
-use actix_web::{get, HttpResponse, Responder};
+use actix_web::{
+    get,
+    HttpResponse,
+    Responder,
+    web
+    };
+    use handlebars::Handlebars;
+use serde_json::json;
+
 
 #[get("/")]
-pub async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hello, Bitches!")
+pub async fn index(hb: web::Data<Handlebars<'_>>) -> impl Responder {
+
+    let name = json!({"name": "eric"});
+    
+    let body: String = match hb.render("views/index", &name ) {
+        Ok(v) => v,
+        Err(e) => "".to_owned(),
+    };
+    HttpResponse::Ok().body(body)
 }
+
+// #[get("/")]
+// pub async fn index() -> impl Responder {
+//     HttpResponse::Ok().body("Hello, Bitches!")
+// }
 
 #[get("/weather")]
 pub async fn weather() -> impl Responder {
@@ -22,7 +44,12 @@ pub async fn weather() -> impl Responder {
     
     let weather_data = forecast(latitude, longitude).await.unwrap();
 
-    HttpResponse::Ok().body(format!("{:?}", weather_data))
+    // HttpResponse::Ok().content_type(value)
+
+    // HttpResponse::Ok().body(format!("{:?}", weather_data))
+    // let name = json!(weather_data);
+    
+    web::Json(weather_data.to_owned())
 }
 
 pub async fn _404() -> impl Responder {
