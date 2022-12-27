@@ -1,3 +1,3 @@
 # rust-weather-app
 
-Weather app based off the nodejs version
+Ugly Weather app based off the nodejs version

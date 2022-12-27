@@ -20,7 +20,7 @@ pub async fn index(hb: web::Data<Handlebars<'_>>) -> impl Responder {
 
     let page_data = json!({
         "name": "eric",
-        "title": "Rust Weather App"
+        "title": "Ugly ass Rust Weather App"
         });
     
     let body: String = match hb.render("views/index", &page_data ) {
