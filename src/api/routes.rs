@@ -1,4 +1,4 @@
-
+use std::collections::HashMap;
 
 use crate::utils::{
     geocode::geocode,
@@ -18,36 +18,29 @@ use serde_json::json;
 #[get("/")]
 pub async fn index(hb: web::Data<Handlebars<'_>>) -> impl Responder {
 
-    let name = json!({"name": "eric"});
+    let page_data = json!({
+        "name": "eric",
+        "title": "Rust Weather App"
+        });
     
-    let body: String = match hb.render("views/index", &name ) {
+    let body: String = match hb.render("views/index", &page_data ) {
         Ok(v) => v,
         Err(e) => "".to_owned(),
     };
     HttpResponse::Ok().body(body)
 }
 
-// #[get("/")]
-// pub async fn index() -> impl Responder {
-//     HttpResponse::Ok().body("Hello, Bitches!")
-// }
-
 #[get("/weather")]
-pub async fn weather() -> impl Responder {
-    // TODO: Have location data passed along with the request
-
-    let location_data = geocode("Saskatoon").await.unwrap();
+pub async fn weather(query: web::Query<HashMap<String, String>>) -> impl Responder {
+    // API request are made here, weather and location data are returned
+    
+    let location_data = geocode(query["address"].as_str()).await.unwrap();
 
     let feature = &location_data["features"][0];
     let latitude = feature["center"][1].as_f64().unwrap();
     let longitude = feature["center"][0].as_f64().unwrap();
     
     let weather_data = forecast(latitude, longitude).await.unwrap();
-
-    // HttpResponse::Ok().content_type(value)
-
-    // HttpResponse::Ok().body(format!("{:?}", weather_data))
-    // let name = json!(weather_data);
     
     web::Json(weather_data.to_owned())
 }

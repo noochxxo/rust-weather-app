@@ -1,16 +1,16 @@
 pub mod keys {
 
-pub struct API_Keys {
+pub struct APIKeys {
   pub weather: String,
   pub location: String,
 }
 
-pub fn set_env_keys() -> API_Keys {
-  let api_keys = API_Keys {
-    weather: "".to_owned(),
-    location: "".to_owned(),
+pub fn get_env_keys() -> APIKeys {
+  // set your api keys here
+  let api_keys = APIKeys {
+    weather: "secret_key".to_owned(),
+    location: "secret_key".to_owned(),
   };
   api_keys
 }
 }
-
